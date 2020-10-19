@@ -17,7 +17,7 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "hemisphere_images": hemispheres(browser),
+        "hemisphere_images": scrape_hemispheres(browser),
         "last_modified": dt.datetime.now()
     }
 
@@ -99,7 +99,7 @@ def mars_facts():
     df.set_index('Description', inplace=True)
 
     # Convert dataframe into HTML format, add bootstrap
-    return df.to_html(classes="table table-striped")ere 
+    return df.to_html(classes="table table-striped")
 
 # CHALLENGE 
 # Scrape hemisphere data
@@ -110,22 +110,36 @@ def scrape_hemispheres(browser):
 
     # parse HTML with Beautiful Soup
     html = browser.html 
-    hemi_soup = soup(html, 'html.parser')
-    urls = hemi_soup.find_all('h3')
+    hemis_soup = soup(html, 'html.parser')
   
     img_urls = [] 
-    # create a dictionary and store the url & title info
-    hemispheres = {} 
-    hemispheres['title'] = hemi_title 
-    hemispheres['img_url'] = image_url
+    # find all items that have Mars hemispheres info 
+    hemis_items = hemis_soup.find_all('div', class_='item')
 
-    for i in urls: 
-        url = i.get_text()
-        title = url.strip('Enhanced')
-        hemi_url = browser.find_link_by_partial_href('download')['href']
-        hemi_dict = {'title': title, 'img_url': hem_url}
-        hem_img_urls.append(hem_dict)
-        browser.quit() 
+    for h in hemis_items: 
+        hemis_dict = {}
+        hemi_title = h.find('h3').text
+        # parse HTML with Beautiful Soup 
+
+        # visit link  
+        # Find the relative image url
+        #hemis_url_rel = hemis_soup.find('a', class_='itemLink product-item')['href']
+        image_url = hemis_soup.find('div', class_='downloads')
+
+        hemi_url = url + image_url
+        browser.visit(hemi_url)
+
+    
+    
+        
+                    
+        # create a dictionary and store the url & title info
+        
+    
+        # add title and url to hemispheres dictionary 
+        img_urls.append({'title': hemi_title, 'img_url': image_url})
+    return img_urls
+
     
   
 if __name__ == "__main__":
