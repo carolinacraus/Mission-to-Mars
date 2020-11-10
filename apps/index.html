@@ -34,15 +34,9 @@
 
       <!-- Section for Featured Image and Facts table -->
       <div class="row" id="mars-featured-image">
-        <div class="col-md-8">
-          <h2>Featured Mars Image</h2>
-
-          <!-- if images is False/None/non-existent, then default to error message -->
-          <img
-            src="{{mars.featured_image | default('static/images/error.png', true) }}"
-            class="img-responsive"
-            alt="Responsive image"
-          />
+        <div class="col-xs-12 col-sm-6 col-md-8">
+          <h2 style="color: white">Featured Mars Image</h2>
+          <img src="{{mars.featured_image}}" class="img-responsive" alt="Responsive image">
         </div>
 
         <div class="col-md-4">
@@ -56,9 +50,12 @@
 
       <!-- Section for Mars Hemispheres -->
       <div class="row" id="mars-hemispheres">
-        <div class="page-header">
-          <h2 class="text-center">Mars Hemispheres</h2>
-        </div>
+        <div class="col-md-12">
+          <div class="row" id="hemisphere_title">
+              <h2 style="text-align:center; color: white;">Mars Hemispheres</h2>
+              <hr style="width:100%">
+          </div>
+      </div>
 
         {% for hemisphere in mars.hemispheres %}
         <div class="col-md-6">
