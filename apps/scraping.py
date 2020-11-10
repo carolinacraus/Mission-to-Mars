@@ -17,7 +17,7 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "hemisphere_images": hemispheres(browser),
+        "hemisphere_images": scrape_hemispheres(browser),
         "last_modified": dt.datetime.now()
     }
 
@@ -108,26 +108,48 @@ def scrape_hemispheres(browser):
     url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(url)
 
-    # parse HTML with Beautiful Soup
-    html = browser.html 
-    hemi_soup = soup(html, 'html.parser')
-    urls = hemi_soup.find_all('h3')
-  
-    img_urls = [] 
-    # create a dictionary and store the url & title info
-    hemispheres = {} 
-    hemispheres['title'] = hemi_title 
-    hemispheres['img_url'] = image_url
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+    html_hemis = browser.html 
 
-    for i in urls: 
-        url = i.get_text()
-        title = url.strip('Enhanced')
-        hemi_url = browser.find_link_by_partial_href('download')['href']
-        hemi_dict = {'title': title, 'img_url': hem_url}
-        hem_img_urls.append(hem_dict)
-        browser.quit() 
+    # parse HTML object with beautiful soup
+    hemis_soup = soup(html_hemis, 'html.parser')
+
+    # find all items that have Mars hemispheres info 
+    hemis_items = hemis_soup.find_all('div', class_='item')
+    
+    # Use the base URL to create an absolute URL
+    hemis_url = 'https://astrogeology.usgs.gov'
+
+    for h in hemis_items: 
+    
+        hemi_title = h.find('h3').text
     
   
+        # visit link  
+        # Find the relative image url
+        hemis_url_rel = hemis_soup.find('a', class_='itemLink product-item')['href']
+
+        browser.visit(hemis_url + hemis_url_rel)
+
+        # parse HTML with Beautiful Soup 
+        html = browser.html 
+        
+        hemi_soup = soup(html, 'html.parser')
+
+        image_link = hemi_soup.find('div', class_='downloads')
+        image_url = hemi_soup.find('li').a['href']
+
+        # create a dictionary and store the url & title info
+        hemispheres = {} 
+        hemispheres['title'] = hemi_title 
+        hemispheres['img_url'] = image_url
+
+        # add title and url to hemispheres dictionary 
+        hemisphere_image_urls.append({'title': hemi_title, 'img_url': image_url})
+        browser.quit()
+    return hemisphere_image_urls
+
 if __name__ == "__main__":
 
     # If running as script, print scraped data
