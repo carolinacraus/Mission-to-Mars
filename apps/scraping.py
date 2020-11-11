@@ -10,7 +10,7 @@ def scrape_all():
     browser = Browser("chrome", executable_path="chromedriver", headless=True)
 
     news_title, news_paragraph = mars_news(browser)
-
+    print("YOUR IN TEH SCRAPE ALL FILE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
     # Run all scraping functions and store results in a dictionary
     data = {
         "news_title": news_title,
@@ -27,7 +27,7 @@ def scrape_all():
 
 
 def mars_news(browser):
-
+    print("IN THE MARS NEWS FUNCTION &&&&&&&&&&&&&&&&&########")
     # Scrape Mars News
     # Visit the mars nasa news site
     url = 'https://mars.nasa.gov/news/'
